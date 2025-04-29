@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  app:
+    build: ./docker/app-develop
+    volumes:
+      - app-store:/project
+    ports:
+      - 8765:80
+    environment:
+      - DATASOURCE_URL=jdbc:postgresql://data/bulletin_board
+      - DATASOURCE_USERNAME=myapp
+      - DATASOURCE_PASSWORD=myapp
+    tty: true
+    command: sleep infinity
+  
+  data:
+    build: ./docker/data
+    volumes:
+      - db-store:/var/lib/postgresql/data
+    ports:
+      - 6432:5432    
+    tty: true
+    environment:
+      POSTGRES_DB: bulletin_board
+      POSTGRES_USER: myapp
+      POSTGRES_PASSWORD: myapp
+
+volumes:
+  app-store:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./project
+      o: bind
+  db-store:
